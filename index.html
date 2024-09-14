@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Audio Transcription</title>
+</head>
+<body>
+  <h1>Real-Time Audio Transcription</h1>
+  <p id="transcription">Transcription will appear here...</p>
+
+  <script>
+    const transcriptionText = document.getElementById('transcription');
+
+    let mediaRecorder;
+    let transcriptionResult = '';
+    let stream; // Declare stream globally to keep it in scope
+    let dataRequestInterval;
+
+    async function startRecording() {
+      // Request microphone access
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+      mediaRecorder.ondataavailable = async (event) => {
+        if (event.data.size > 0) {
+          const audioBlob = event.data;
+          console.log('Sending audio blob: ', audioBlob.size, audioBlob.type);  // Log size and type
+          const transcript = await sendAudioForTranscription(audioBlob);
+          if (transcript) {
+            transcriptionResult += ' ' + transcript;
+            transcriptionText.textContent = transcriptionResult.trim();
+          }
+        }
+      };
+
+      mediaRecorder.onerror = (event) => {
+        console.error('MediaRecorder error:', event.error);
+      };
+
+      mediaRecorder.onstop = (event) => {
+        console.log('MediaRecorder stopped:', event);
+        clearInterval(dataRequestInterval);
+      };
+
+      mediaRecorder.start(); // Start recording indefinitely
+
+      // Request data every 3 seconds
+      dataRequestInterval = setInterval(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.requestData();
+        }
+      }, 3000);
+    }
+
+    async function sendAudioForTranscription(audioBlob) {
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');  // Send file as webm
+
+      try {
+        const response = await fetch('http://localhost:3000/transcribe', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+        console.log('Transcription response:', data);
+        return data.text;  // Return the transcribed text
+      } catch (error) {
+        console.error('Error transcribing audio:', error);
+        return null;
+      }
+    }
+
+    // Start recording as soon as the page loads
+    window.onload = () => {
+      startRecording();
+    };
+  </script>
+</body>
+</html>

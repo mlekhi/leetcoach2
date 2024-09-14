@@ -15,6 +15,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as getGroqResponse from "../getGroqResponse.js";
 import type * as getLeetCodeTask from "../getLeetCodeTask.js";
 
 /**
@@ -26,6 +27,7 @@ import type * as getLeetCodeTask from "../getLeetCodeTask.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  getGroqResponse: typeof getGroqResponse;
   getLeetCodeTask: typeof getLeetCodeTask;
 }>;
 export declare const api: FilterApi<

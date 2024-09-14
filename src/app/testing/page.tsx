@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useQuery, useAction} from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
 export default function Home() {
@@ -10,7 +10,11 @@ export default function Home() {
        difficulty: "Medium",
      }
    );
+   const groqTask = useAction(api.getGroqResponse.getGroqChatCompletion, {
+     userMessage: "I love men.",
+   });
    console.log(randomTask);
+   console.log(groqTask)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       testing shit

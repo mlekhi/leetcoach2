@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/link';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = () => {
@@ -8,30 +8,26 @@ const Navbar = () => {
   return (
     <nav className="flex w-full items-center justify-between px-7 py-3 text-sm bg-black fixed top-0 z-50">
       {" "}
-      {/* Changed text-lg to text-sm */}
       <div className="flex">
-        <Link to="/">
+        <Link href="/">
           <h1 className="text-xl gradient-text font-extrabold font-roboto text-white">
             LeetCoach
           </h1>{" "}
-          {/* Changed text-2xl to text-xl */}
         </Link>
       </div>
       <div className="flex font-medium text-white/80">
-        <Link to="https://github.com/mlekhi/leetcoach">
+        <Link href="https://github.com/mlekhi/leetcoach">
           <h1 className="mx-4 pt-3 hover:border-b-2 border-blue-600 hover:text-blue-600">
-            Github
+            GitHub
           </h1>{" "}
-          {/* Adjusted spacing */}
         </Link>
 
         <div className="border-[0.5px] mt-3 h-8 border-white/25"></div>
 
-        <Link to="https://devpost.com/">
+        <Link href="https://devpost.com/">
           <h1 className="mx-4 pt-3 hover:border-b-2 border-blue-600 hover:text-blue-600">
             Devpost
           </h1>{" "}
-          {/* Adjusted spacing */}
         </Link>
 
         {/* Auth Button */}

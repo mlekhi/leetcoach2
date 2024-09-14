@@ -1,13 +1,15 @@
+'use client'; // This directive is necessary for client-side features
+
 import React, { useState } from 'react';
 import { Controlled as ControlledEditor } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
-import 'codemirror/mode/javascript/javascript'; // Import JS mode
+import 'codemirror/mode/javascript/javascript';
 
-const CodeEditor = () => {
+const CodeEditor: React.FC = () => {
   const [code, setCode] = useState('// Write your code here...');
 
-  const handleEditorChange = (value: string) => {
+  const handleEditorChange = (editor: any, data: any, value: string) => {
     setCode(value);
   };
 

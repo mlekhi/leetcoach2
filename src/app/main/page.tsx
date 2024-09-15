@@ -14,19 +14,19 @@ const Interview = () => {
             <div className="container mx-auto flex flex-col lg:flex-row gap-12">
                 
                 <div className="lg:w-1/4">
-                    <div className="mb-12 p-6 rounded-lg shadow-neon-blue">
+                    <div className="mb-12 p-6 rounded-lg">
                         <Question />
                     </div>
                 </div>
                 
                 <div className="lg:w-1/2">
-                    <div className="p-6 rounded-lg shadow-neon-purple">
+                    <div className="p-6 rounded-lg">
                         <Sandbox />
                     </div>
                 </div>
 
                 <div className="lg:w-1/4 flex flex-col items-center">
-                    <div className="w-20 mt-4 p-4 rounded-full shadow-neon-blue">
+                    <div className="w-15 mt-4 p-4 rounded-full shadow-neon-blue">
                         <Timer />
                     </div>
                     <div className="mt-4 p-4 rounded-lg">

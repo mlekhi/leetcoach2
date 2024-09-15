@@ -25,8 +25,8 @@ const InterviewQuestionsPage = () => {
     <div className="container mx-auto p-4">
       <div className="space-y-6">
         {questions.map((q, index) => (
-          <div key={index} className="p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-2">
+          <div key={index} className="rounded-lg shadow-md">
+            <h2 className="text-4xl font-semibold mb-2">
               {q.problem_name} 
             </h2>
             <h3 className="text-lg font-semibold mt-4 mb-2">Examples:</h3>

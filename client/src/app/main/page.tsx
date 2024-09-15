@@ -4,12 +4,20 @@ import React from 'react';
 import Question from './Question';
 import CodeEditor from './CodeSandbox';
 import Timer from './Timer';
-import ReceiveText from './ReceiveText';
-import { useState, useEffect } from 'react';
-import { useQuery } from "convex/react";
+import { useSocket } from '../hooks/useSocket'; // Adjust the path if necessary
 
 const Interview = () => {
-    const difficulty = "easy"    
+    const difficulty = "easy";
+    
+    // Use the useSocket hook to get socket-related data
+    const { response, error, sendMessage } = useSocket();
+
+    // Optionally, handle socket-related logic or side effects here
+    React.useEffect(() => {
+        // Example: Send a message when the component mounts
+        sendMessage('Component Mounted');
+    }, [sendMessage]);
+
     return (
         <div className="min-h-screen text-white py-12 px-6 flex items-start pt-40 pb-40">
             <div className="container mx-auto flex flex-col lg:flex-row gap-12">
@@ -35,10 +43,11 @@ const Interview = () => {
                     </div>
                 </div>
 
-                <ReceiveText/>
+                {/* Display the response and error from the socket */}
+                {/* {response && <div className="p-4 bg-green-500 rounded-lg">Response: {response}</div>}
+                {error && <div className="p-4 bg-red-500 rounded-lg">Error: {error}</div>} */}
             </div>
         </div>
-
     );
 }
 

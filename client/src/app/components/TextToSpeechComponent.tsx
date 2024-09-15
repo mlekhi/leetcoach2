@@ -1,39 +1,35 @@
 'use client';
 
-import React, { useState, FormEvent, useEffect } from 'react';
+import React, { useState, FormEvent } from 'react';
+import useSocket from '../hooks/useSocket';
 
 const TextToSpeechComponent: React.FC = () => {
   const [text, setText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const { response, sendMessage, error } = useSocket();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setAudioUrl(null); // Reset audioUrl before starting the request
     try {
-      const response = await fetch('/api/text-to-speech', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate speech');
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setAudioUrl(url); // Set the audio URL to play automatically
+      sendMessage(text);
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to generate speech. Please try again.');
-    } finally {
-      setIsLoading(false);
+      alert('Failed to send message. Please try again.');
     }
   };
+
+  // Update audio URL when response changes
+  React.useEffect(() => {
+    if (response) {
+      // Assuming the response is a URL to the audio file
+      console.log("to hear: ", {response});
+      setAudioUrl(response);
+      setIsLoading(false);
+    }
+  }, [response]);
 
   return (
     <div style={{ maxWidth: '400px', margin: '40px auto' }}>
@@ -60,7 +56,7 @@ const TextToSpeechComponent: React.FC = () => {
         </button>
       </form>
       {audioUrl && (
-        <div style={{ marginTop: '16px', display: 'hidden' }}>
+        <div style={{ marginTop: '16px' }}>
           <audio controls src={audioUrl} autoPlay>
             Your browser does not support the audio element.
           </audio>
@@ -71,3 +67,4 @@ const TextToSpeechComponent: React.FC = () => {
 };
 
 export default TextToSpeechComponent;
+

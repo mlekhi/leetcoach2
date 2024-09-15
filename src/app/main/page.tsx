@@ -4,6 +4,7 @@ import React from 'react';
 import Question from './Question';
 import Sandbox from './CodeSandbox';
 import Timer from './Timer';
+import ReceiveText from './ReceiveText';
 import { useState, useEffect } from 'react';
 import { useQuery } from "convex/react";
 
@@ -33,6 +34,7 @@ const Interview = () => {
                         <img src="logo.png" alt="Logo" className="mx-auto max-w-full h-auto" />
                     </div>
                 </div>
+                <ReceiveText/>
             </div>
         </div>
 

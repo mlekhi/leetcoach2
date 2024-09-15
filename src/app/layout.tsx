@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ConvexClientProvider> <Navbar />{children}</ConvexClientProvider>
+        <ConvexClientProvider>{children}</ConvexClientProvider>
         </body>
     </html>
   );

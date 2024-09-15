@@ -1,19 +1,14 @@
-require('dotenv').config({ path: './.env.local' }); // Load .env.local file
-console.log('Loaded environment variables:', process.env);
+const { Writable } = require('stream');
+const axios = require('axios');
+const speech = require('@google-cloud/speech').v1p1beta1;
+const chalk = require('chalk');
+const recorder = require('node-record-lpcm16');
 
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
 const languageCode = 'en-US';
-const streamingLimit = 10000; // ms - set to low number for demo purposes
-
-const chalk = require('chalk');
-const { Writable } = require('stream');
-const recorder = require('node-record-lpcm16');
-const axios = require('axios'); // To send HTTP requests to Flask
-
-// Imports the Google Cloud client library
-const speech = require('@google-cloud/speech').v1p1beta1;
-
+const streamingLimit = 10000; // ms
+let restartCounter = 0;
 const client = new speech.SpeechClient();
 
 const config = {
@@ -28,7 +23,6 @@ const request = {
 };
 
 let recognizeStream = null;
-let restartCounter = 0;
 let audioInput = [];
 let lastAudioInput = [];
 let resultEndTime = 0;
@@ -37,9 +31,12 @@ let finalRequestEndTime = 0;
 let newStream = true;
 let bridgingOffset = 0;
 let lastTranscriptWasFinal = false;
+let lastFinalTranscript = ''; // To store the last final transcript
+let transcriptTimeout = null;
+const transcriptWaitTime = 5000; // 5 seconds
 
 async function sendTranscriptionToFlask(transcript) {
-  const flaskUrl = 'http://127.0.0.1:5000/get_completion'; // Flask server URL
+  const flaskUrl = 'http://127.0.0.1:5000/get_completion';
   try {
     console.log('Sending transcription to Flask:', transcript);
     const response = await axios.post(flaskUrl, {
@@ -56,8 +53,7 @@ async function sendTranscriptionToFlask(transcript) {
 }
 
 function startStream() {
-  audioInput = []; // Clear current audioInput
-
+  audioInput = [];
   recognizeStream = client
     .streamingRecognize(request)
     .on('error', (err) => {
@@ -69,7 +65,7 @@ function startStream() {
     })
     .on('data', speechCallback);
 
-  setTimeout(restartStream, streamingLimit); // Restart stream when streamingLimit expires
+  setTimeout(restartStream, streamingLimit);
 }
 
 const speechCallback = (stream) => {
@@ -90,9 +86,20 @@ const speechCallback = (stream) => {
 
   if (stream.results[0].isFinal) {
     process.stdout.write(chalk.green(`${stdoutText}\n`));
+    
+    if (stream.results[0].alternatives[0].transcript !== lastFinalTranscript) {
+      lastFinalTranscript = stream.results[0].alternatives[0].transcript;
+      
+      // Clear previous timeout if still pending
+      if (transcriptTimeout) {
+        clearTimeout(transcriptTimeout);
+      }
 
-    // Send the final transcript to Flask
-    sendTranscriptionToFlask(stream.results[0].alternatives[0].transcript);
+      // Set new timeout for 5 seconds before sending transcription
+      transcriptTimeout = setTimeout(() => {
+        sendTranscriptionToFlask(lastFinalTranscript);
+      }, transcriptWaitTime);
+    }
 
     isFinalEndTime = resultEndTime;
     lastTranscriptWasFinal = true;
@@ -176,14 +183,13 @@ function restartStream() {
   startStream();
 }
 
-// Start recording and send the microphone input to the Speech API
 recorder
   .record({
     sampleRateHertz: sampleRateHertz,
-    threshold: 0, // Silence threshold
+    threshold: 0,
     silence: 1000,
     keepSilence: true,
-    recordProgram: 'rec', // Try also "arecord" or "sox"
+    recordProgram: 'rec',
   })
   .stream()
   .on('error', (err) => {

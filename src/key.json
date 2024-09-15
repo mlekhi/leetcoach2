@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "leetcoach-435617",
+    "private_key_id": "e59e7a4e5ef339cbf690959ef6b0ac9762cdaac9",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC4bkvo253MrwPg\nvbo2lQTh0oECPafbiBn0AVGrHc4qfzTTppi9ByAPS/p+Cu/IY3MIsvC53Va6D0yu\nm+AWUzqA2kMY5e5JG79QKQ6JrdQFGT4jAtLO1/4m3bxx0xMuyow/2yQH2fnqLSJG\n/iX/xWrRkvnhK2Ngz3Cvl6v2e82AeWD95nLV6MDeeV1QwqzcHmuHx2Kwy3kRUgri\noFYok8fi8CeDuUYxsO7yYr1ax9kgcCq2UECzzBPkyjz1qevKhyHQg9QFknNeiL5J\nBNkpcJCCImgWUOVbgwuejog6jheyzfI1ZyhnW5P5afAc0TJ5jM8e/K6eOfCoI2ip\nR9JtXH67AgMBAAECggEAVr5JpbPlfCe0wzd5JcLhEPVZCBzHnlFdI46bQsg593Ls\n/b8Vh5KaWZd6sV2jebSMnkLLRh/8cnZPsrBNrTJoCcKeXE+Iy4npaWJmHAtN9Tfy\nKbViQTcFqnIP99k25IMPg9kmEStMh//CZ3GRncLUgs2GCYnGq/nlHjFQCBYiiZHA\ndA5tre6qpIceof7elEb3qW4xhtuFVySKyFka5H99JEvd5/X/5jUslC1tsAeIJ2bj\noOvDIxIL4eJRl2pZbKw+/z4EBQdBek0DLx/s5pfnlef9/M/sX+rGfv78AoM5V3CS\niqRuEvRfcwFHV019GKm2hHu8GOdPjAPtxXmVhy3UwQKBgQDmeTbzehPpvdkhR/2g\nS5HpuVcJhZ3QD9PT9DgSGVmGTIRkR6HJZ1e/80VQR+Ehhkv4tqxWtXYeCG//1yoC\nZ90rurJf2eABGx62ds9QoALlqWM3lP7sOiDP8Hkagb48Qw1guxSBlE+qwB+x32+6\nPSV8oXgrm1e659R/dwRIwY/wBQKBgQDM25nBsqJ5BPi1af6mN96YqLe/pXSmyoez\nIv8xztNkChZu420QyaROWIdimN7xJkZjO8ZuFuBM/+nsYMaZQ8mwn+iuajEHvosS\nrucZQly9Zu+G1uodaK7JhLYgTgvjdDAbhF01vuT0yjGB32RbSF99KS8yHPeItZUO\n/XKvvGGvvwKBgQCvcNZDwUonRD1k+Eg5HU2VfWCj/vKCz4mQbve/z0w2z0h4jY66\nodBKbgT1d8IIoxJx4ZyO5NNlSUb4mfGAo0/ZWeUu0cuTC/H1M7vcw/FwoeDFDsZ/\nTEBuCcAmTV1iwigM2lxhx2RdtqJp5IxIWQOQO9oeV8IQpSk9XnwEZlQLgQKBgGwL\nYlPDqGdVlOrxhWobS16OlaMRW63gYaO8UIXvhJRdsak4b7yL7QmZLYZ2BBeBzVvn\nGefUTuatjq2p+PS6yPRL0oey4DsqZuUqtB4hXxJR6QDf9sgd/xmv0fLF1wVWsUzC\nCfsfvFfTEDtkG+T9DcfQYeD3YCKNSpmGWOeQ3qC3AoGBANZ298OAviwtjPJo1vLA\nMN+W69jXnAJBgljWEpSl/6F5qsKE3QchKfVEKPFGpHR3Q7fOU5Q3GvAByQ6SmWJk\n4FfLQ+q0ZGxfpriWChmw/bdh0sq3cQ5Q5bN5xD8D5X0ZH9dBWx9cSnhzj6Bvfl5l\nK3tPqO+u0ZgUs+DYIU6RgisZ\n-----END PRIVATE KEY-----\n",
+    "client_email": "leetcoach@leetcoach-435617.iam.gserviceaccount.com",
+    "client_id": "107682946439049082877",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/leetcoach%40leetcoach-435617.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}

@@ -1,9 +1,10 @@
+'use client';
 import React from "react";
 import Link from 'next/link';
-import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Navbar = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { user, error, isLoading } = useUser();
 
   return (
     <nav className="flex w-full items-center justify-between px-7 py-3 text-sm bg-black fixed top-0 z-50">
@@ -16,7 +17,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex font-medium text-white/80">
-        <Link href="https://github.com/mlekhi/leetcoach">
+        <Link href="https://github.com/mlekhi/leetcoach2">
           <h1 className="mx-4 pt-3 hover:border-b-2 border-blue-600 hover:text-blue-600">
             GitHub
           </h1>{" "}
@@ -30,20 +31,17 @@ const Navbar = () => {
           </h1>{" "}
         </Link>
 
-        {/* Auth Button */}
+        
         <ul className="flex items-center justify-center px-4 py- rounded-full text-white bg-gradient-to-r from-blue-500 to-purple-600 font-semibold shadow-neon-blue hover:shadow-neon-purple transition-all duration-300 ease-in-out transform hover:scale-105">
-          {isAuthenticated ? (
+          {user ? (
             <li
-              onClick={() =>
-                logout({ logoutParams: { returnTo: window.location.origin } })
-              }
               className="cursor-pointer"
             >
-              Log Out
-            </li>
+              <a href="/api/auth/logout">Login</a>
+              </li>
           ) : (
-            <li onClick={() => loginWithRedirect()} className="cursor-pointer">
-              Log In
+            <li className="cursor-pointer">
+              <a href="/api/auth/login">Login</a>
             </li>
           )}
         </ul>

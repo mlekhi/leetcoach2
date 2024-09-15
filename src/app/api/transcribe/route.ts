@@ -1,55 +1,43 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
-import FormData from "form-data";
+import { NextRequest, NextResponse } from 'next/server';
+import { SpeechClient } from '@google-cloud/speech';
+import { Readable } from 'stream';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+const client = new SpeechClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const chunks: Buffer[] = [];
-    for await (const chunk of req) {
-      chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
-    }
-    const buffer = Buffer.concat(chunks);
+    const audioBuffer = await req.arrayBuffer();
+    const audioStream = Readable.from(Buffer.from(audioBuffer));
 
-    const formData = new FormData();
-    formData.append("file", buffer, {
-      filename: "audio.webm",
-      contentType: "audio/webm",
-    });
-    formData.append("model", "whisper-1");
+    const request = {
+      config: {
+        encoding: 'LINEAR16', // Adjust encoding if necessary
+        sampleRateHertz: 16000,
+        languageCode: 'en-US',
+      },
+      interimResults: true, // If you want interim results
+    };
 
-    const response = await axios.post(
-      "https://api.openai.com/v1/audio/transcriptions",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          ...formData.getHeaders(),
-        },
-      }
-    );
+    const recognizeStream = client
+      .streamingRecognize(request)
+      .on('data', (data) => {
+        console.log("dummy")
+        const transcription = data.results[0]?.alternatives[0]?.transcript || '';
+        console.log('Transcription:', transcription);
+      })
+      .on('error', (error) => {
+        console.error('Error during speech recognition:', error);
+        return NextResponse.json({ error: 'Failed to transcribe audio' }, { status: 500 });
+      })
+      .on('end', () => {
+        console.log('Transcription ended');
+      });
 
-    res.status(200).json({ text: response.data.text });
-  } catch (error: any) {
-    console.error(
-      "Error transcribing audio:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).json({
-      error: "Failed to transcribe audio",
-      details: error.response ? error.response.data : error.message,
-    });
+    audioStream.pipe(recognizeStream);
+
+    return NextResponse.json({ message: 'Processing audio' }, { status: 200 });
+  } catch (error) {
+    console.error('Error during processing:', error);
+    return NextResponse.json({ error: 'Error processing audio', details: error.message }, { status: 500 });
   }
 }

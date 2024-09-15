@@ -33,7 +33,7 @@ const LiveTranscription: React.FC = () => {
           fetch('/api/transcribe', {
             method: 'POST',
             headers: {
-              'Content-Type': 'audio/webm',
+              'Content-Type': 'audio/mp3',
             },
             body: audioBuffer,
           })
@@ -44,7 +44,7 @@ const LiveTranscription: React.FC = () => {
             .catch((error) => console.error('Error:', error));
         });
 
-        mediaRecorder.start(1000); // Send data every 1000ms
+        mediaRecorder.start(10000); // Send data every 1000ms
       } catch (error) {
         console.error('Error accessing media devices:', error);
       }

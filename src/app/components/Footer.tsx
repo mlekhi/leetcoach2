@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="bg-black text-white py-6 flex flex-col items-center">
+    <footer className="text-white py-6 flex flex-col items-center">
       <div className="footer-links flex space-x-6 mb-4">
         {/* Uncomment these when you have the sections */}
         {/* <a href="#about" className="hover:text-gray-400">About</a>

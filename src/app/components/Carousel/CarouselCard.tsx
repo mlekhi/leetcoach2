@@ -13,7 +13,7 @@ interface CardProps {
 const CarouselCard: React.FC<CardProps> = ({ card }) => {
   return (
     <div className="m-1 rounded-xl hover:bg-black/10 p-5 min-h-[440px] flex flex-col items-center">
-      <div className="reverse-gradient h-[170px] w-full flex justify-center">
+      <div className="reverse-gradient w-full flex justify-center">
         <Image
           src={card.image}
           alt={card.content}

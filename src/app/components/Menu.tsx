@@ -7,13 +7,18 @@ const Navbar = () => {
   const { user, error, isLoading } = useUser();
 
   return (
-    <nav className="flex w-full items-center justify-between px-7 py-3 text-sm bg-black fixed top-0 z-50">
+    <nav className="flex w-full items-center justify-between px-7 py-3 text-sm fixed top-0 z-50">
       {" "}
       <div className="flex">
-        <Link href="/">
+        <Link href="/" className="flex items-center">
+          <img 
+            src="logo.png"
+            alt="LeetCoach"
+            className="w-10 h-10 object-cover"
+          />
           <h1 className="text-xl gradient-text font-extrabold font-roboto text-white">
             LeetCoach
-          </h1>{" "}
+          </h1> 
         </Link>
       </div>
       <div className="flex font-medium text-white/80">

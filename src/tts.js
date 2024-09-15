@@ -4,8 +4,12 @@ const util = require('util');
 const path = require('path');
 
 // Creates a client
-const client = new textToSpeech.TextToSpeechClient();
+//const client = new textToSpeech.TextToSpeechClient();
+// const textToSpeech = require("@google-cloud/text-to-speech");
 
+const client = new textToSpeech.TextToSpeechClient({
+  keyFilename: "C:/Users/david/Desktop/leetcoach2/key.json",
+});
 // The text to be synthesized
 const text = 'Hmm, In order to solve this you need a hash set; that\'s where you can store the elements of the list and that will make your solution O of N, I mean, Linear time';
 

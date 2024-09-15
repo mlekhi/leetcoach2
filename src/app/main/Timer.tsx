@@ -1,7 +1,9 @@
+'use client'; // This directive marks the component as a Client Component
+
 import React, { useState, useEffect } from "react";
 
-const Timer = () => {
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
+const Timer: React.FC = () => {
+  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -12,7 +14,7 @@ const Timer = () => {
     }
   }, [timeLeft]);
 
-  const formatTime = (seconds : number) => {
+  const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes < 10 ? "0" : ""}${minutes}:${secs < 10 ? "0" : ""}${secs}`;

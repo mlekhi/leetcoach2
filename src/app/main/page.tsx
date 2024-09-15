@@ -2,7 +2,7 @@
 import React from 'react';
 import Question from './Question';
 import Sandbox from './CodeSandbox';
-import Timer from '../components/Timer';
+import Timer from './Timer';
 import { useState, useEffect } from 'react';
 import { useQuery } from "convex/react";
 

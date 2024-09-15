@@ -4,6 +4,7 @@ const questions = [
   {
     problem_name: "Duplicate Integer",
     difficulty: "Easy",
+    description: "Given an integer array nums, return true if any value appears more than once in the array, otherwise return false.",
     examples: [
       { input: "nums = [1, 2, 3, 3]", output: "true" },
       { input: "nums = [1, 2, 3, 4]", output: "false" }
@@ -29,6 +30,7 @@ const InterviewQuestionsPage = () => {
             <h2 className="text-4xl font-semibold mb-2">
               {q.problem_name} 
             </h2>
+            <h3 className="text-lg font-semibold mt-4 mb-2">{q.description}</h3>
             <h3 className="text-lg font-semibold mt-4 mb-2">Examples:</h3>
             <ul className="list-disc pl-5 space-y-2">
               {q.examples.map((ex, i) => (

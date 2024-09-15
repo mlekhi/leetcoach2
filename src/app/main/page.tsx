@@ -2,7 +2,7 @@
 'use client'
 import React from 'react';
 import Question from './Question';
-import Sandbox from './CodeSandbox';
+import CodeEditor from './CodeSandbox';
 import Timer from './Timer';
 import ReceiveText from './ReceiveText';
 import { useState, useEffect } from 'react';
@@ -22,7 +22,7 @@ const Interview = () => {
                 
                 <div className="lg:w-1/2">
                     <div className="p-6 rounded-lg">
-                        <Sandbox />
+                        <CodeEditor />
                     </div>
                 </div>
 
@@ -34,6 +34,7 @@ const Interview = () => {
                         <img src="logo.png" alt="Logo" className="mx-auto max-w-full h-auto" />
                     </div>
                 </div>
+
                 <ReceiveText/>
             </div>
         </div>

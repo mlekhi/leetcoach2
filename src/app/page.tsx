@@ -26,11 +26,11 @@ function Landing() {
               Start Your First Interview
             </a>
           </div>
+          </div>
 
           <div className="mt-8">
             <Carousel />
           </div>
-        </div>
       </header>
     </div>
   );

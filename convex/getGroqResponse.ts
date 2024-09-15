@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
-import Groq from "groq-sdk";
+import Groq from "groq-sdk/index.mjs";
 
 export const getGroqChatCompletion = action({
   args: {

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from './components/Menu'; // Adjust the import path as needed
+import Menu from './components/Menu'; // Ensure path is correct
+import Footer from './components/Footer'; // Ensure path is correct
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,8 +31,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ConvexClientProvider>{children}</ConvexClientProvider>
-        </body>
+        <UserProvider>
+          <ConvexClientProvider>
+            <Menu />
+            {children}
+            <Footer />
+          </ConvexClientProvider>
+        </UserProvider>
+      </body>
     </html>
   );
 }

@@ -2,6 +2,7 @@
 
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { api } from "./convex/_generated/api";
 
 const LiveTranscription: React.FC = () => {
   const [transcription, setTranscription] = useState<string>('');
@@ -52,7 +53,7 @@ const LiveTranscription: React.FC = () => {
             .catch((error) => console.error('Error:', error));
         });
 
-        mediaRecorder.start(4000); // Send data every 1000ms
+        mediaRecorder.start(5000); // Send data every 1000ms
       } catch (error) {
         console.error('Error accessing media devices:', error);
       }

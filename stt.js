@@ -1,58 +1,5 @@
-// const recorder = require('node-record-lpcm16');
-
-// // Imports the Google Cloud client library
-// const speech = require('@google-cloud/speech');
-
-// // Creates a client
-// const client = new speech.SpeechClient();
-
-// /**
-//  * TODO(developer): Uncomment the following lines before running the sample.
-//  */
-//  const encoding = 'LINEAR16';
-// const sampleRateHertz = 16000;
-// const languageCode = 'en-US';
-
-// const request = {
-//   config: {
-//     encoding: encoding,
-//     sampleRateHertz: sampleRateHertz,
-//     languageCode: languageCode,
-//   },
-//   interimResults: false, // If you want interim results, set this to true
-// };
-
-// // Create a recognize stream
-// const recognizeStream = client
-//   .streamingRecognize(request)
-//   .on('error', console.error)
-//   .on('data', data =>
-//     process.stdout.write(
-//       data.results[0] && data.results[0].alternatives[0]
-//         ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
-//         : '\n\nReached transcription time limit, press Ctrl+C\n'
-//     )
-//   );
-
-// // Start recording and send the microphone input to the Speech API.
-// // Ensure SoX is installed, see https://www.npmjs.com/package/node-record-lpcm16#dependencies
-// recorder
-//   .record({
-//     sampleRateHertz: sampleRateHertz,
-//     threshold: 0,
-//     // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
-//     verbose: false,
-//     recordProgram: 'rec', // Try also "arecord" or "sox"
-//     silence: '10.0',
-//   })
-//   .stream()
-//   .on('error', console.error)
-//   .pipe(recognizeStream);
-
-// console.log('Listening, press Ctrl+C to stop.');
-
-
-
+require('dotenv').config({ path: './.env.local' }); // Load .env.local file
+console.log('Loaded environment variables:', process.env);
 
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
@@ -60,11 +7,11 @@ const languageCode = 'en-US';
 const streamingLimit = 10000; // ms - set to low number for demo purposes
 
 const chalk = require('chalk');
-const {Writable} = require('stream');
+const { Writable } = require('stream');
 const recorder = require('node-record-lpcm16');
+const axios = require('axios'); // To send HTTP requests to Convex
 
 // Imports the Google Cloud client library
-// Currently, only v1p1beta1 contains result-end-time
 const speech = require('@google-cloud/speech').v1p1beta1;
 
 const client = new speech.SpeechClient();
@@ -91,13 +38,27 @@ let newStream = true;
 let bridgingOffset = 0;
 let lastTranscriptWasFinal = false;
 
+async function sendTranscriptionToConvex(transcript) {
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  console.log('Convex URL:', process.env.NEXT_PUBLIC_CONVEX_URL);
+
+  try {
+    console.log('Sending transcription to Convex:', transcript);
+    const response = await axios.post(`${convexUrl}/api/transcribe`, {
+      transcript,
+    });
+    console.log('Received response from Convex:', response.data);
+  } catch (error) {
+    console.error('Error sending transcription to Convex:', error);
+  }
+}
+
 function startStream() {
-  // Clear current audioInput
-  audioInput = [];
-  // Initiate (Reinitiate) a recognize stream
+  audioInput = []; // Clear current audioInput
+
   recognizeStream = client
     .streamingRecognize(request)
-    .on('error', err => {
+    .on('error', (err) => {
       if (err.code === 11) {
         // restartStream();
       } else {
@@ -106,17 +67,14 @@ function startStream() {
     })
     .on('data', speechCallback);
 
-  // Restart stream when streamingLimit expires
-  setTimeout(restartStream, streamingLimit);
+  setTimeout(restartStream, streamingLimit); // Restart stream when streamingLimit expires
 }
 
-const speechCallback = stream => {
-  // Convert API result end time from seconds + nanoseconds to milliseconds
+const speechCallback = (stream) => {
   resultEndTime =
     stream.results[0].resultEndTime.seconds * 1000 +
     Math.round(stream.results[0].resultEndTime.nanos / 1000000);
 
-  // Calculate correct time based on offset from audio sent twice
   const correctedTime =
     resultEndTime - bridgingOffset + streamingLimit * restartCounter;
 
@@ -131,10 +89,12 @@ const speechCallback = stream => {
   if (stream.results[0].isFinal) {
     process.stdout.write(chalk.green(`${stdoutText}\n`));
 
+    // Send the final transcript to Convex
+    sendTranscriptionToConvex(stream.results[0].alternatives[0].transcript);
+
     isFinalEndTime = resultEndTime;
     lastTranscriptWasFinal = true;
   } else {
-    // Make sure transcript does not exceed console character length
     if (stdoutText.length > process.stdout.columns) {
       stdoutText =
         stdoutText.substring(0, process.stdout.columns - 4) + '...';
@@ -148,7 +108,6 @@ const speechCallback = stream => {
 const audioInputStreamTransform = new Writable({
   write(chunk, encoding, next) {
     if (newStream && lastAudioInput.length !== 0) {
-      // Approximate math to calculate time of chunks
       const chunkTime = streamingLimit / lastAudioInput.length;
       if (chunkTime !== 0) {
         if (bridgingOffset < 0) {
@@ -214,6 +173,7 @@ function restartStream() {
 
   startStream();
 }
+
 // Start recording and send the microphone input to the Speech API
 recorder
   .record({
@@ -224,7 +184,7 @@ recorder
     recordProgram: 'rec', // Try also "arecord" or "sox"
   })
   .stream()
-  .on('error', err => {
+  .on('error', (err) => {
     console.error('Audio recording error ' + err);
   })
   .pipe(audioInputStreamTransform);

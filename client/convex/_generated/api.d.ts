@@ -17,8 +17,6 @@ import type {
 } from "convex/server";
 import type * as getGroqResponse from "../getGroqResponse.js";
 import type * as getLeetCodeTask from "../getLeetCodeTask.js";
-import type * as https from "../https.js";
-import type * as messages from "../messages.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,8 +29,6 @@ import type * as messages from "../messages.js";
 declare const fullApi: ApiFromModules<{
   getGroqResponse: typeof getGroqResponse;
   getLeetCodeTask: typeof getLeetCodeTask;
-  https: typeof https;
-  messages: typeof messages;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -30,7 +30,7 @@ const Navbar = () => {
 
         <div className="border-[0.5px] mt-3 h-8 border-white/25"></div>
 
-        <Link href="https://devpost.com/">
+        <Link href="https://devpost.com/software/leetcoach?ref_content=existing_user_added_to_software_team&ref_feature=portfolio&ref_medium=email&utm_campaign=software&utm_content=added_to_software_team&utm_medium=email&utm_source=transactional">
           <h1 className="mx-4 pt-3 hover:border-b-2 border-blue-600 hover:text-blue-600">
             Devpost
           </h1>{" "}

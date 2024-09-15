@@ -1,40 +1,21 @@
-import React, { useEffect, useState } from 'react';
+// components/SocketComponent.tsx
+import React from 'react';
+import useSocket from '../components/useSocket'; // Adjust the path if necessary
 
-function RealTimeComponent() {
-  const [data, setData] = useState(null);
+const SocketComponent: React.FC = () => {
+    const { response, error, sendMessage } = useSocket();
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
-
-    ws.onopen = () => {
-      console.log('Connected to WebSocket');
+    const handleClick = () => {
+        sendMessage('Hello, Server!');
     };
 
-    ws.onmessage = (event) => {
-      const receivedData = JSON.parse(event.data);
-      setData(receivedData);
-    };
+    return (
+        <div>
+            <button onClick={handleClick}>Send Message</button>
+            {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+            <p>Response: {response}</p>
+        </div>
+    );
+};
 
-    ws.onclose = () => {
-      console.log('Disconnected from WebSocket');
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    // Cleanup on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  return (
-    <div>
-      <h1>Real-Time Data from Convex</h1>
-      {data ? <p>{data.message}</p> : <p>Waiting for data...</p>}
-    </div>
-  );
-}
-
-export default RealTimeComponent;
+export default SocketComponent;

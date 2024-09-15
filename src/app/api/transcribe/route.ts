@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
 
     const request = {
       config: {
-        encoding: 'MP3' as const, // Ensure the encoding is correct for your audio file
-        sampleRateHertz: 16000, // Adjust this to match the sample rate of your audio file
+        encoding: 'WEBM_OPUS' as const, // Ensure the encoding is correct for your audio file
+        sampleRateHertz: 48000, // Adjust this to match the sample rate of your audio file
         languageCode: 'en-US',
       },
       audio: {
@@ -29,10 +29,14 @@ export async function POST(req: NextRequest) {
 
     // Check if response.results is defined and not empty
     if (response.results && response.results.length > 0) {
-      const transcriptions = response.results.map(result => 
-        result.alternatives[0]?.transcript || ''
-      );
-      return NextResponse.json({ message: 'Transcription completed', transcriptions }, { status: 200 });
+      const transcriptions = response.results.map(result => {
+        // Access alternatives and get the transcript
+        const alternative = result.alternatives[0]; // Take the first alternative
+        console.log(alternative)
+        return alternative;
+      });
+
+    return NextResponse.json({ message: 'Transcription completed', transcriptions }, { status: 200 });
     } else {
       return NextResponse.json({ message: 'No transcription results found' }, { status: 404 });
     }

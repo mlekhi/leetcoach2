@@ -2,6 +2,7 @@
 
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { api } from "./convex/_generated/api";
 
 const LiveTranscription: React.FC = () => {
   const [transcription, setTranscription] = useState<string>('');
@@ -37,14 +38,22 @@ const LiveTranscription: React.FC = () => {
             },
             body: audioBuffer,
           })
-            .then((response) => response.json())
-            .then((data) => {
-              setTranscription((prev) => prev + ' ' + data.transcription);
-            })
+            .then((response) => {console.log('Received response:', response);
+              return response.json();})
+            .then((data) => {console.log('Received data:', data);
+              if (data.transcriptions && data.transcriptions.length > 0) {
+                const transcript = data.transcriptions[0].transcript; // Access the first transcript
+                console.log('Transcript:', transcript);
+                
+                setTranscription((prev) => prev + ' ' + transcript); // Append the transcript
+              } else {
+                console.log('No transcription found:', data);
+              }
+                      })
             .catch((error) => console.error('Error:', error));
         });
 
-        mediaRecorder.start(10000); // Send data every 1000ms
+        mediaRecorder.start(5000); // Send data every 1000ms
       } catch (error) {
         console.error('Error accessing media devices:', error);
       }

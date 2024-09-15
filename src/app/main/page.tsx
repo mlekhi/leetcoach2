@@ -1,4 +1,5 @@
 // src/InterviewQuestionsPage.js
+'use client'
 import React from 'react';
 import Question from './Question';
 import Sandbox from './CodeSandbox';

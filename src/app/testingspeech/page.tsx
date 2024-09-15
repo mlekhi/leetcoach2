@@ -74,13 +74,28 @@
 // export default TextToSpeech;
 
 
-import TextToSpeechComponent from '../components/TextToSpeechComponent';
+// import TextToSpeechComponent from '../components/TextToSpeechComponent';
 
-export default function Page() {
+// export default function Page() {
+//   return (
+//     <div>
+//       <h1>Text to Speech</h1>
+//       <TextToSpeechComponent />
+//     </div>
+//   );
+// }
+
+
+
+import LiveTranscription from '../components/LiveTranscription';
+
+const Home: React.FC = () => {
   return (
     <div>
-      <h1>Text to Speech</h1>
-      <TextToSpeechComponent />
+      <h1>Live Transcription with GCP Speech-to-Text</h1>
+      <LiveTranscription />
     </div>
   );
-}
+};
+
+export default Home;

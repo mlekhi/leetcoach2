@@ -10,11 +10,22 @@ export default function Home() {
        difficulty: "Medium",
      }
    );
-   const groqTask = useAction(api.getGroqResponse.getGroqChatCompletion, {
-     userMessage: "I love men.",
-   });
+
+   // In your component:
+   const groqAction = useAction(api.getGroqResponse.getGroqChatCompletion);
+
+   // To use the action:
+   const handleSubmit = async () => {
+     try {
+       const response = await groqAction({ userMessage: "I love men." });
+       console.log(response);
+     } catch (error) {
+       console.error("Error:", error);
+     }
+   };
    console.log(randomTask);
-   console.log(groqTask)
+
+   handleSubmit();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       testing shit

@@ -9,7 +9,7 @@ const streamingLimit = 10000; // ms - set to low number for demo purposes
 const chalk = require('chalk');
 const { Writable } = require('stream');
 const recorder = require('node-record-lpcm16');
-const axios = require('axios'); // To send HTTP requests to Convex
+const axios = require('axios'); // To send HTTP requests to Flask
 
 // Imports the Google Cloud client library
 const speech = require('@google-cloud/speech').v1p1beta1;
@@ -38,18 +38,20 @@ let newStream = true;
 let bridgingOffset = 0;
 let lastTranscriptWasFinal = false;
 
-async function sendTranscriptionToConvex(transcript) {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  console.log('Convex URL:', process.env.NEXT_PUBLIC_CONVEX_URL);
-
+async function sendTranscriptionToFlask(transcript) {
+  const flaskUrl = 'http://127.0.0.1:5000/get_completion'; // Flask server URL
   try {
-    console.log('Sending transcription to Convex:', transcript);
-    const response = await axios.post(`${convexUrl}/api/transcribe`, {
-      transcript,
+    console.log('Sending transcription to Flask:', transcript);
+    const response = await axios.post(flaskUrl, {
+      userMessage: transcript,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-    console.log('Received response from Convex:', response.data);
+    console.log('Received response from Flask:', response.data);
   } catch (error) {
-    console.error('Error sending transcription to Convex:', error);
+    console.error('Error sending transcription to Flask:', error);
   }
 }
 
@@ -89,8 +91,8 @@ const speechCallback = (stream) => {
   if (stream.results[0].isFinal) {
     process.stdout.write(chalk.green(`${stdoutText}\n`));
 
-    // Send the final transcript to Convex
-    sendTranscriptionToConvex(stream.results[0].alternatives[0].transcript);
+    // Send the final transcript to Flask
+    sendTranscriptionToFlask(stream.results[0].alternatives[0].transcript);
 
     isFinalEndTime = resultEndTime;
     lastTranscriptWasFinal = true;

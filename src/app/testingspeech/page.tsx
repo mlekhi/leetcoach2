@@ -2,11 +2,11 @@
 import React, { useState, useRef, FormEvent } from "react";
 
 const TextToSpeech: React.FC = () => {
-  const [text, setText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [text, setText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -39,7 +39,7 @@ const TextToSpeech: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <h1 className="text-2xl font-bold mb-4">Text-to-Speech</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -53,7 +53,7 @@ const TextToSpeech: React.FC = () => {
             id="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             rows={4}
             required
           />

@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { TextToSpeechClient, protos } from "@google-cloud/text-to-speech";
 
 const client = new TextToSpeechClient();
@@ -8,20 +8,12 @@ type SynthesizeSpeechRequest =
 type SynthesizeSpeechResponse =
   protos.google.cloud.texttospeech.v1.ISynthesizeSpeechResponse;
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const { text } = req.body as { text?: string };
+    const { text } = await req.json();
 
     if (!text) {
-      return res.status(400).json({ error: "Text is required" });
+      return NextResponse.json({ error: "Text is required" }, { status: 400 });
     }
 
     const request: SynthesizeSpeechRequest = {
@@ -36,23 +28,16 @@ export default async function handler(
       throw new Error("No audio content received from Google TTS API");
     }
 
-    // Set appropriate headers for audio streaming
-    res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Transfer-Encoding", "chunked");
+    const headers = new Headers();
+    headers.set("Content-Type", "audio/mpeg");
+    headers.set("Content-Length", response.audioContent.length.toString());
 
-    // Send the audio content directly to the client
-    res.send(response.audioContent);
+    return new NextResponse(response.audioContent, { headers });
   } catch (error) {
     console.error("Error during text-to-speech synthesis:", error);
-    res.status(500).json({ error: "Error synthesizing speech" });
+    return NextResponse.json(
+      { error: "Error synthesizing speech" },
+      { status: 500 }
+    );
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "1mb",
-    },
-    responseLimit: false,
-  },
-};

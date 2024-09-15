@@ -1,55 +1,68 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
-import FormData from "form-data";
+import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
+import fs from 'fs';
+import FormData from 'form-data';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+export async function POST(request: NextRequest) {
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("OpenAI API key is not set");
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
   }
-
+  
   try {
-    const chunks: Buffer[] = [];
-    for await (const chunk of req) {
-      chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+    console.log("Received POST request");
+    const formData = await request.formData();
+    const file = formData.get('file');
+
+    if (!file || !(file instanceof Blob)) {
+      console.error("No file or invalid file in request");
+      return NextResponse.json({ error: 'No audio file uploaded' }, { status: 400 });
     }
-    const buffer = Buffer.concat(chunks);
 
-    const formData = new FormData();
-    formData.append("file", buffer, {
-      filename: "audio.webm",
-      contentType: "audio/webm",
+    console.log("File received:", file.type, file.size);
+
+    // Save the file to a temporary location (optional but useful)
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const filePath = `/tmp/audio.webm`;
+    fs.writeFileSync(filePath, buffer); // Save to disk
+
+    // Stream the saved file for the OpenAI request
+    const openaiFormData = new FormData();
+    openaiFormData.append('file', fs.createReadStream(filePath), {
+      filename: 'audio.webm',
+      contentType: 'audio/webm',
     });
-    formData.append("model", "whisper-1");
+    openaiFormData.append('model', 'whisper-1');
 
-    const response = await axios.post(
-      "https://api.openai.com/v1/audio/transcriptions",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          ...formData.getHeaders(),
-        },
-      }
-    );
+    console.log("Sending request to OpenAI");
+    const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', openaiFormData, {
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        ...openaiFormData.getHeaders(),
+      },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
 
-    res.status(200).json({ text: response.data.text });
+    console.log("Received response from OpenAI");
+    return NextResponse.json({ text: response.data.text });
   } catch (error: any) {
-    console.error(
-      "Error transcribing audio:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).json({
-      error: "Failed to transcribe audio",
-      details: error.response ? error.response.data : error.message,
-    });
+    console.error('Error transcribing audio:', error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.error('OpenAI API error details:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        headers: error.response.headers,
+      });
+      return NextResponse.json({ 
+        error: 'Failed to transcribe audio', 
+        details: error.response.data,
+        status: error.response.status,
+        statusText: error.response.statusText
+      }, { status: error.response.status });
+    } else {
+      return NextResponse.json({ error: 'Failed to transcribe audio', details: error.message }, { status: 500 });
+    }
   }
 }

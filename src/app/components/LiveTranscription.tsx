@@ -1,4 +1,6 @@
 // components/LiveTranscription.tsx
+
+'use client';
 import { useEffect, useRef, useState } from 'react';
 
 const LiveTranscription: React.FC = () => {

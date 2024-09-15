@@ -10,7 +10,7 @@ const languageCode = 'en-US';
 const streamingLimit = 10000; // ms
 let restartCounter = 0;
 const client = new speech.SpeechClient();
-
+let user_speech_inputs = ``;
 const config = {
   encoding: encoding,
   sampleRateHertz: sampleRateHertz,
@@ -78,17 +78,42 @@ const speechCallback = (stream) => {
 
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
-  let stdoutText = '';
+  let stdoutText = "";
   if (stream.results[0] && stream.results[0].alternatives[0]) {
     stdoutText =
-      correctedTime + ': ' + stream.results[0].alternatives[0].transcript;
+    stdoutText + correctedTime + ': ' + stream.results[0].alternatives[0].transcript;
   }
 
   if (stream.results[0].isFinal) {
     process.stdout.write(chalk.green(`${stdoutText}\n`));
     
     if (stream.results[0].alternatives[0].transcript !== lastFinalTranscript) {
-      lastFinalTranscript = stream.results[0].alternatives[0].transcript;
+      user_speech_inputs =  user_speech_inputs + "user: " + stream.results[0].alternatives[0].transcript + "\n";
+      lastFinalTranscript = `Problem: Duplicate Integer
+
+      Problem Description:
+      "Given an integer array nums, return true if any value appears more than once in the array, otherwise return false."
+      
+      Solution to the problem that you should check the users solution with (this is only accessible to you and not to the user and you should not reveal details about this solution unless the user explicitly asks for hints): "class Solution:\n    def hasDuplicate(self, nums: List[int]) -> bool:\n        hashset = set()\n        for n in nums:\n            if n in hashset:\n                return True\n            hashset.add(n)\n        return False"
+      
+      Considering this context, you need to:
+      1. Only respond with a proper response if necessary. If the user's explanation and code are progressing as expected, do not interrupt or provide redundant feedback and only return "tingus pingus". Do not include tingus pingus when you want to speak. 
+      2. If the user says something off topic, don’t respond and instead bring them back on track.
+      3. If the user gives a correct 
+      4. Always respond to the user in second person POV or their name
+      5. Silence is represented by the # symbol followed by a number of seconds. If the user is quiet for more than 5 seconds, ask them to explain their thought process.
+      6. When the user has a valid solution for their code and they have sufficiently explained their thought process, congratulate the user and tell them that they are free to end the interview. 
+      Respond with a proper response if:
+      1. The user’s explanation or code shows incorrect logic or inefficiency.
+      2. The user is still making mistakes you previously pointed out but hasn’t corrected.
+      3. The user's explanation doesn't match their code, or they have introduced new issues.
+      4. The user asks for help or a hint (without giving the full answer).
+      5. If the user has addressed your earlier feedback, acknowledge their progress and guide them to the next step.
+      6. Always respond as briefly as possible and only when you have something new to add. Avoid repeating feedback unless the user has ignored or misunderstood previous advice.
+      
+      UserName = David 
+      
+      The conversation is going as follows: \n` + user_speech_inputs;
       
       // Clear previous timeout if still pending
       if (transcriptTimeout) {
@@ -97,6 +122,7 @@ const speechCallback = (stream) => {
 
       // Set new timeout for 5 seconds before sending transcription
       transcriptTimeout = setTimeout(() => {
+        //console.log(lastFinalTranscript);
         sendTranscriptionToFlask(lastFinalTranscript);
       }, transcriptWaitTime);
     }

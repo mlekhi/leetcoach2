@@ -44,7 +44,7 @@ const LiveTranscription: React.FC = () => {
             .catch((error) => console.error('Error:', error));
         });
 
-        mediaRecorder.start(10000); // Send data every 1000ms
+        mediaRecorder.start(4000); // Send data every 1000ms
       } catch (error) {
         console.error('Error accessing media devices:', error);
       }

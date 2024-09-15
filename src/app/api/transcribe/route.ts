@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
 
     const request = {
       config: {
-        encoding: 'MP3' as const, // Ensure the encoding is correct for your audio file
-        sampleRateHertz: 16000, // Adjust this to match the sample rate of your audio file
+        encoding: 'WEBM_OPUS' as const, // Ensure the encoding is correct for your audio file
+        sampleRateHertz: 48000, // Adjust this to match the sample rate of your audio file
         languageCode: 'en-US',
       },
       audio: {

@@ -1,6 +1,5 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // import carousel styles
-// import Carousel from "./components/Carousel/CarouselWrapper";
-import Menu from './components/Menu';
+import Carousel from "./components/Carousel/CarouselWrapper";
 
 function Landing() {
   return (
@@ -36,7 +35,7 @@ function Landing() {
           </div>
         </div>
         <div className="mt-8">
-          {/* <Carousel /> */}
+          <Carousel />
         </div>
       </header>
     </div>

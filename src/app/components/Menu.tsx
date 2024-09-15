@@ -33,15 +33,15 @@ const Navbar = () => {
 
         
         <ul className="flex items-center justify-center px-4 py- rounded-full text-white bg-gradient-to-r from-blue-500 to-purple-600 font-semibold shadow-neon-blue hover:shadow-neon-purple transition-all duration-300 ease-in-out transform hover:scale-105">
-          {user ? (
-            <li
-              className="cursor-pointer"
-            >
-              <a href="/api/auth/logout">Login</a>
-              </li>
-          ) : (
+          {user?.email_verified ? (
             <li className="cursor-pointer">
-              <a href="/api/auth/login">Login</a>
+            <a href="/api/auth/logout">Logout</a>
+          </li>          
+          ) : (
+            <li
+            className="cursor-pointer"
+          >
+            <a href="/api/auth/login">Login</a>
             </li>
           )}
         </ul>

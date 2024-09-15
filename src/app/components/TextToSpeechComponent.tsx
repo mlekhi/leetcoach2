@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 
 const TextToSpeechComponent: React.FC = () => {
   const [text, setText] = useState<string>('');
@@ -10,6 +10,7 @@ const TextToSpeechComponent: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setAudioUrl(null); // Reset audioUrl before starting the request
     try {
       const response = await fetch('/api/text-to-speech', {
         method: 'POST',
@@ -18,14 +19,14 @@ const TextToSpeechComponent: React.FC = () => {
         },
         body: JSON.stringify({ text }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to generate speech');
       }
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
-      setAudioUrl(url);
+      setAudioUrl(url); // Set the audio URL to play automatically
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to generate speech. Please try again.');
@@ -43,8 +44,8 @@ const TextToSpeechComponent: React.FC = () => {
           placeholder="Enter text to convert to speech"
           style={{ width: '100%', minHeight: '100px', marginBottom: '16px', padding: '8px' }}
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isLoading}
           style={{
             padding: '10px 20px',
@@ -59,8 +60,8 @@ const TextToSpeechComponent: React.FC = () => {
         </button>
       </form>
       {audioUrl && (
-        <div style={{ marginTop: '16px' }}>
-          <audio controls src={audioUrl}>
+        <div style={{ marginTop: '16px', display: 'hidden' }}>
+          <audio controls src={audioUrl} autoPlay>
             Your browser does not support the audio element.
           </audio>
         </div>
